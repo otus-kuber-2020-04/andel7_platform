@@ -1,7 +1,7 @@
 apiVersion: apps/v1
 kind: StatefulSet
 metadata:
-  # This name uniquely identifies the StatefulSet
+  # This name uniquely identifies the StatefulSet 
   name: minio
 spec:
   serviceName: minio
