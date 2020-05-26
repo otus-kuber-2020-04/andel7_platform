@@ -1,0 +1,55 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: web1
+spec:
+  strategy:
+    type: RollingUpdate
+    rollingUpdate:
+      maxUnavailable: 0
+      maxSurge: 100%
+  replicas: 1
+  selector:
+    matchLabels:
+      app: web1
+  template:
+    metadata:
+      labels:
+        app: web1
+    spec:
+      containers:
+      - name: web
+        image: avtandilko/web:1.0
+        livenessProbe:
+          tcpSocket:
+            port: 8000
+        readinessProbe:
+          httpGet:
+            path: /index.html
+            port: 8000
+        volumeMounts:
+          - name: app
+            mountPath: /app
+      initContainers:
+        - name: html-gen
+          image: busybox:musl
+          command: ['sh', '-c', 'wget -O- https://pastebin.com/raw/V2Rw6aeX > /app/index.html']
+          volumeMounts:
+            - name: app
+              mountPath: /app
+      volumes:
+        - name: app
+          emptyDir: {}
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: svc-nginx1
+spec:
+  selector:
+    app: web1 
+  type: ClusterIP
+  ports:
+  - protocol: TCP
+    port: 80
+    targetPort: 8000
