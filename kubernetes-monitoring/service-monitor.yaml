@@ -1,0 +1,12 @@
+apiVersion: monitoring.coreos.com/v1
+kind: ServiceMonitor
+metadata:
+  name: example-app
+  labels:
+    release: prom-oper
+spec:
+  selector:
+    matchLabels:
+      app: nginx
+  endpoints:
+  - port: port-2
