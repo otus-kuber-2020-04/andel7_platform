@@ -1,0 +1,4 @@
+redis:
+  usePassword: false
+  sentinel:
+    usePassword: false
